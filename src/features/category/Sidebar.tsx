@@ -1,14 +1,12 @@
 import {
   View,
-  Text,
-  StyleSheet,
   ScrollView,
-  Animated,
   TouchableOpacity,
   Image,
+  StyleSheet,
 } from 'react-native';
 import React, { FC, useEffect, useRef } from 'react';
-import {
+import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -18,9 +16,11 @@ import { Colors } from '@utils/Constants';
 
 interface SidebarProps {
   selectedCategory: any;
-  categories: any;
+  categories: any[];
   onCategoryPress: (category: any) => void;
 }
+
+const ITEM_HEIGHT = 90;
 
 const Sidebar: FC<SidebarProps> = ({
   selectedCategory,
@@ -41,16 +41,18 @@ const Sidebar: FC<SidebarProps> = ({
       });
       if (isSelected) targetIndex = index;
     });
+
     if (targetIndex !== -1) {
       indicatorPosition.value = withTiming(targetIndex * 100, {
         duration: 500,
       });
+
       runOnJS(() => {
         ScrollViewRef.current?.scrollTo({
           y: targetIndex * 100,
           animated: true,
         });
-      });
+      })();
     }
   }, [selectedCategory]);
 
@@ -62,39 +64,38 @@ const Sidebar: FC<SidebarProps> = ({
     <View style={styles.sideBar}>
       <ScrollView
         ref={ScrollViewRef}
-        contentContainerStyle={{ paddingBottom: 50 }}
+        contentContainerStyle={{ paddingBottom: 20 }}
         showsVerticalScrollIndicator={false}
       >
-        <Animated.View style={(styles.indicator, indicatorStyle)} />
+        <Animated.View style={[styles.indicator, indicatorStyle]} />
 
-        <View>
-          {categories?.map((category: any, index: number) => {
-            const animatedStyle = useAnimatedStyle(() => ({
-              bottom: animatedValues[index].value,
-            }));
-            return (
-              <TouchableOpacity
-                key={index}
-                activeOpacity={1}
-                style={styles.categoryButton}
-                onPress={() => onCategoryPress(category)}
+        {categories.map((category, index) => {
+          const animatedStyle = useAnimatedStyle(() => ({
+            bottom: animatedValues[index].value,
+          }));
+          const isSelected = selectedCategory?._id === category?._id;
+
+          return (
+            <TouchableOpacity
+              key={category._id}
+              activeOpacity={0.8}
+              style={styles.categoryButton}
+              onPress={() => onCategoryPress(category)}
+            >
+              <View
+                style={[
+                  styles.imageContainer,
+                  isSelected && styles.selectedImageContainer,
+                ]}
               >
-                <View
-                  style={[
-                    styles.imageContainer,
-                    selectedCategory.id === category?._id &&
-                      styles.selectedImageContainer,
-                  ]}
-                >
-                  <Animated.Image
-                    source={{ uri: category?.image }}
-                    style={[styles.image, animatedStyle]}
-                  />
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+                <Animated.Image
+                  source={{ uri: category?.image }}
+                  style={[styles.image, animatedStyle]}
+                />
+              </View>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -103,40 +104,31 @@ const Sidebar: FC<SidebarProps> = ({
 const styles = StyleSheet.create({
   sideBar: {
     width: '24%',
+    height: '100%',
     backgroundColor: '#fff',
     borderRightWidth: 0.8,
     borderRightColor: '#eee',
     position: 'relative',
   },
-  categoryButton: {
-    padding: 10,
-    height: 100,
-    paddingVertical: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
   indicator: {
     position: 'absolute',
     right: 0,
-    width: 4,
-    height: 80,
-    top: 10,
-    alignSelf: 'center',
-    backgroundColor: Colors.secondary,
-    borderTopLeftRadius: 15,
-    borderBottomLeftRadius: 15,
+    width: 3,
+    height: 70,
+    backgroundColor: '#00A500',
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    zIndex: 1,
   },
-  image: {
-    width: '80%',
-    height: '80%',
-    resizeMode: 'contain',
+  categoryButton: {
+    height: ITEM_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   imageContainer: {
     borderRadius: 100,
-    height: '50%',
-    marginBottom: 10,
-    width: '75%',
+    height: 50,
+    width: 50,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F3F4F7',
@@ -144,6 +136,11 @@ const styles = StyleSheet.create({
   },
   selectedImageContainer: {
     backgroundColor: '#CFFFDB',
+  },
+  image: {
+    width: '90%',
+    height: '90%',
+    resizeMode: 'contain',
   },
 });
 

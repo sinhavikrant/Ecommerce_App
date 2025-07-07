@@ -43,7 +43,7 @@ const Header: FC<{ showNotice: () => void }> = ({ showNotice }) => {
             variant="h2"
             style={styles.text}
           >
-            15 minutes
+            15 minutes on Grocery
           </CustomText>
           <TouchableOpacity style={styles.noticeBtn} onPress={showNotice}>
             <CustomText

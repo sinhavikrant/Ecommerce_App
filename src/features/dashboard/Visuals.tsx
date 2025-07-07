@@ -28,6 +28,7 @@ const Visuals = () => {
       />
       <LottieView
         autoPlay
+        enableMergePathsAndroidForKitKatAndAbove={true}
         loop
         style={styles.lottie}
         source={require('@assets/animations/raining.json')}
@@ -39,9 +40,9 @@ const Visuals = () => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: 0,
-    width: '100%',
-    zIndex: -1, // Push behind content if needed
+    // top: 0,
+    // width: '100%',
+    // zIndex: -1, // Push behind content if needed
   },
   lottie: {
     width: '100%',

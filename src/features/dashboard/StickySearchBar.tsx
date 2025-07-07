@@ -19,19 +19,14 @@ const StickySearchBar = () => {
     return { opacity };
   });
 
-  const backgroundOpacity = useAnimatedStyle(() => {
+  const backgroundColorChanges = useAnimatedStyle(() => {
     const opacity = interpolate(scrollY.value, [1, 80], [0, 1]);
-    return { opacity };
+    return { backgroundColor: `rgba(255,255,255,${opacity})` };
   });
 
   return (
-    <StickyView>
-      {/* Background fade animation */}
-      <Animated.View style={[styles.background, backgroundOpacity]} />
-
+    <StickyView style={backgroundColorChanges}>
       <SearchBar />
-
-      {/* Shadow animation */}
       <Animated.View style={[styles.shadow, animatedShadow]} />
     </StickyView>
   );

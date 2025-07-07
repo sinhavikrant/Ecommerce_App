@@ -22,7 +22,6 @@ const Notice = () => {
               variant="h8"
               fontFamily={Fonts.SemiBold}
             >
-              {' '}
               It's raining near this location
             </CustomText>
             <CustomText variant="h9" style={styles.textCenter}>

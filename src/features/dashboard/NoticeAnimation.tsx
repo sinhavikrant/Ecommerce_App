@@ -1,17 +1,13 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 import React, { FC } from 'react';
 import { NoticeHeight } from '@utils/Scaling';
 import Notice from '@components/dashboard/Notice';
-import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-  interpolate,
-} from 'react-native-reanimated';
+import { useAnimatedStyle, interpolate } from 'react-native-reanimated';
 
 const NOTICE_HEIGHT = -(NoticeHeight + 12);
 
 const NoticeAnimation: FC<{
-  noticePosition: SharedValue<number>;
+  noticePosition: any;
   children: React.ReactElement;
 }> = ({ noticePosition, children }) => {
   const noticeStyle = useAnimatedStyle(() => ({
@@ -32,10 +28,25 @@ const NoticeAnimation: FC<{
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.noticeContainer, noticeStyle]}>
+      <Animated.View
+        style={[
+          styles.noticeContainer,
+          { transform: [{ translateY: noticePosition }] },
+        ]}
+      >
         <Notice />
       </Animated.View>
-      <Animated.View style={[styles.contentContainer, contentStyle]}>
+      <Animated.View
+        style={[
+          styles.contentContainer,
+          {
+            paddingTop: noticePosition.interpolate({
+              inputRange: [NOTICE_HEIGHT, 0],
+              outputRange: [0, NoticeHeight + 20],
+            }),
+          },
+        ]}
+      >
         {children}
       </Animated.View>
     </View>

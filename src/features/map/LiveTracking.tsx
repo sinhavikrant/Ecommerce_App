@@ -10,6 +10,7 @@ import CustomText from '@components/ui/CustomText';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import OrderSummary from './OrderSummary';
 import DeliveryDetails from './DeliveryDetails';
+import LiveMap from './LiveMap';
 
 const LiveTracking = () => {
   const { currentOrder, setCurrentOrder } = userAuthStore();
@@ -44,6 +45,14 @@ const LiveTracking = () => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
+        <LiveMap
+          deliveryLocation={currentOrder?.deliveryLocation}
+          pickupLocation={currentOrder?.pickupLocation}
+          deliveryPersonLocation={currentOrder?.deliveryPersonLocation}
+          hasAccepted={currentOrder?.status == 'confirmed'}
+          hasPickedUp={currentOrder?.status == 'arriving'}
+        />
+
         <View style={styles.flexRow}>
           <View style={styles.iconContainer}>
             <Icon

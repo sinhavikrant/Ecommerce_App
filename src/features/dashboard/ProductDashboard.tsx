@@ -44,8 +44,9 @@ const NOTICE_HEIGHT = -(NoticeHeight + 12);
 const ProductDashboard = () => {
   const { user, setUser } = userAuthStore();
   // const noticePosition = useRef(new RNAnimated.Value(NOTICE_HEIGHT)).current;
-  const noticePosition = useSharedValue(NOTICE_HEIGHT);
+  const noticePosition = useRef(new RNAnimated.Value(NOTICE_HEIGHT)).current;
   const insets = useSafeAreaInsets();
+
   const { scrollY, expand } = useCollapsibleContext();
   const previousScroll = useRef<number>(0);
 
@@ -63,16 +64,16 @@ const ProductDashboard = () => {
     };
   });
 
-  // const slideUp = () => {
-  //   RNAnimated.timing(noticePosition, {
-  //     toValue: NOTICE_HEIGHT,
-  //     duration: 1200,
-  //     useNativeDriver: false,
-  //   }).start();
-  // };
   const slideUp = () => {
-    noticePosition.value = withTiming(NOTICE_HEIGHT, { duration: 1200 });
+    RNAnimated.timing(noticePosition, {
+      toValue: NOTICE_HEIGHT,
+      duration: 1200,
+      useNativeDriver: false,
+    }).start();
   };
+  // const slideUp = () => {
+  //   noticePosition.value = withTiming(NOTICE_HEIGHT, { duration: 1200 });
+  // };
 
   // const slideDown = () => {
   //   RNAnimated.timing(noticePosition, {
@@ -82,7 +83,12 @@ const ProductDashboard = () => {
   //   }).start();
   // };
   const slideDown = () => {
-    noticePosition.value = withTiming(0, { duration: 1200 });
+    RNAnimated.timing(noticePosition, {
+      toValue: 0,
+      duration: 1200,
+      useNativeDriver: false,
+    }).start();
+    noticePosition.setValue(0);
   };
 
   useEffect(() => {
@@ -95,75 +101,75 @@ const ProductDashboard = () => {
 
   return (
     <NoticeAnimation noticePosition={noticePosition}>
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-        <>
-          <Visuals />
+      {/* <SafeAreaView style={{ flex: 1 }} edges={['top']}> */}
+      <>
+        <Visuals />
+        <SafeAreaView />
 
-          <Animated.View style={[styles.backToTopButton, backToTopStyle]}>
-            <TouchableOpacity
-              onPress={() => {
-                scrollY.value = 0;
-                expand();
-              }}
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
-            >
-              <Icon
-                name="arrow-up-circle-outline"
-                color="white"
-                size={RFValue(12)}
-              />
-              <CustomText
-                variant="h9"
-                style={{ color: 'white' }}
-                fontFamily={Fonts.SemiBold}
-              >
-                Back to top
-              </CustomText>
-            </TouchableOpacity>
-          </Animated.View>
-
-          <CollapsibleContainer
-            style={[styles.panelContainer, { marginTop: insets.top || 20 }]}
+        <Animated.View style={[styles.backToTopButton, backToTopStyle]}>
+          <TouchableOpacity
+            onPress={() => {
+              scrollY.value = 0;
+              expand();
+            }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
           >
-            <CollapsibleHeaderContainer containerStyle={styles.transparent}>
-              <AnimatedHeader
-                showNotice={() => {
-                  slideDown();
-                  const timeoutId = setTimeout(() => {
-                    slideUp();
-                  }, 3500);
-                  return () => clearTimeout(timeoutId);
-                }}
-              />
-              <StickySearchBar />
-            </CollapsibleHeaderContainer>
-
-            <CollapsibleScrollView
-              nestedScrollEnabled
-              style={styles.panelContainer}
-              showsVerticalScrollIndicator={false}
+            <Icon
+              name="arrow-up-circle-outline"
+              color="white"
+              size={RFValue(12)}
+            />
+            <CustomText
+              variant="h9"
+              style={{ color: 'white' }}
+              fontFamily={Fonts.SemiBold}
             >
-              <Content />
+              Back to top
+            </CustomText>
+          </TouchableOpacity>
+        </Animated.View>
 
-              <View style={{ backgroundColor: '#f8f8f8', padding: 20 }}>
-                <CustomText
-                  fontSize={RFValue(32)}
-                  fontFamily={Fonts.Bold}
-                  style={{ opacity: 0.2 }}
-                >
-                  ShopNext🛒
-                </CustomText>
-                <CustomText
-                  fontFamily={Fonts.Bold}
-                  style={{ marginTop: 10, paddingBottom: 100, opacity: 0.2 }}
-                >
-                  Developed By Vikrant Kumar
-                </CustomText>
-              </View>
-            </CollapsibleScrollView>
-          </CollapsibleContainer>
-        </>
-      </SafeAreaView>
+        <CollapsibleContainer
+          style={[styles.panelContainer, { marginTop: insets.top || 20 }]}
+        >
+          <CollapsibleHeaderContainer containerStyle={styles.transparent}>
+            <AnimatedHeader
+              showNotice={() => {
+                slideDown();
+                const timeoutId = setTimeout(() => {
+                  slideUp();
+                }, 3500);
+                return () => clearTimeout(timeoutId);
+              }}
+            />
+            <StickySearchBar />
+          </CollapsibleHeaderContainer>
+
+          <CollapsibleScrollView
+            nestedScrollEnabled
+            style={styles.panelContainer}
+            showsVerticalScrollIndicator={false}
+          >
+            <Content />
+
+            <View style={{ backgroundColor: '#f8f8f8', padding: 20 }}>
+              <CustomText
+                fontSize={RFValue(32)}
+                fontFamily={Fonts.Bold}
+                style={{ opacity: 0.2 }}
+              >
+                ShopNext🛒
+              </CustomText>
+              <CustomText
+                fontFamily={Fonts.Bold}
+                style={{ marginTop: 10, paddingBottom: 100, opacity: 0.2 }}
+              >
+                Developed By Vikrant Kumar
+              </CustomText>
+            </View>
+          </CollapsibleScrollView>
+        </CollapsibleContainer>
+      </>
     </NoticeAnimation>
   );
 };

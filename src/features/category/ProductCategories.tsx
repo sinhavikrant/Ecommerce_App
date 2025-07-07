@@ -24,7 +24,7 @@ const ProductCategories = () => {
         const data = await getAllCategories();
         setCategories(data);
         if (data && data?.length > 0) {
-          setSelectedCategory(data(0));
+          setSelectedCategory(data[0]);
         }
       } catch (error) {
         console.log('Error Fetching Categories', error);
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   subContainer: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch',
   },
   center: {
     flex: 1,
